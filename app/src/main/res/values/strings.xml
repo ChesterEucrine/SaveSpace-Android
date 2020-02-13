@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SaveSpace</string>
+    <string name="yyyy_mm_dd">YYYY-MM-DD</string>
+    <string name="modified">Modified:</string>
+    <string name="notes">NOTES</string>
+    <string name="no_title">No Title</string>
+</resources>
