@@ -1,3 +1,5 @@
+package com.example.savespace;
+
 public class SpaceNote {
     private int id;
     private String title;
