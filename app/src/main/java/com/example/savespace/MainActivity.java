@@ -10,15 +10,15 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<SpaceNote> spaceNotes;
-    SpaceAdapter spaceAdapter;
+    //SpaceAdapter spaceAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SpaceNote a = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
-        SpaceNote b = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
+        //SpaceNote a = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
+        /*SpaceNote b = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
         SpaceNote c = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
         SpaceNote d = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
         SpaceNote e = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
@@ -28,10 +28,10 @@ public class MainActivity extends AppCompatActivity {
         SpaceNote i = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
         SpaceNote j = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
         SpaceNote k = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
-        SpaceNote l = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
+        SpaceNote l = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");*/
 
-        spaceNotes.add(a);
-        spaceNotes.add(b);
+        //spaceNotes.add(a);
+        /*spaceNotes.add(b);
         spaceNotes.add(c);
         spaceNotes.add(d);
         spaceNotes.add(e);
@@ -41,11 +41,11 @@ public class MainActivity extends AppCompatActivity {
         spaceNotes.add(i);
         spaceNotes.add(j);
         spaceNotes.add(k);
-        spaceNotes.add(l);
+        spaceNotes.add(l);*/
 
-        spaceAdapter = new SpaceAdapter(spaceNotes, this, R.layout.note_list);
-        ListView main_list = findViewById(R.id.main_list);
-        main_list.setAdapter(spaceAdapter);
+        //spaceAdapter = new SpaceAdapter(spaceNotes, this, R.layout.note_list);
+        //ListView main_list = findViewById(R.id.main_list);
+        //main_list.setAdapter(spaceAdapter);
     }
 
     /*
