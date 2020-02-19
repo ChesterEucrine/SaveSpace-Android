@@ -8,8 +8,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.savespace.R;
 import com.google.android.material.snackbar.Snackbar;
@@ -18,16 +20,28 @@ import java.util.ArrayList;
 
 public class SpaceAdapter extends ArrayAdapter<SpaceNote> {
 
-    private ArrayList<SpaceNote> spaceNotes;
     private Context mContext;
-    private int lastPosition = -1;
+    private ArrayList<SpaceNote> spaceNotes;
 
-    public SpaceAdapter(ArrayList<SpaceNote> sN, @NonNull Context context, int resource) {
+
+    public SpaceAdapter (ArrayList<SpaceNote> sN, Context context, int resource) {
         super(context, resource);
-        mContext = context;
         spaceNotes = sN;
+        mContext = context;
     }
 
+    public void onClick(View v)
+    {
+        Toast.makeText(mContext, "Some item clicked!!!", Toast.LENGTH_SHORT).show();
+    }
+
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        return super.getView(position, convertView, parent);
+    }
+
+    /*
     private static class ViewHolder
     {
         TextView title;
@@ -74,7 +88,7 @@ public class SpaceAdapter extends ArrayAdapter<SpaceNote> {
         }
 
         /*Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
-        result.startAnimation(animation);*/
+        result.startAnimation(animation);/
         lastPosition = position;
 
         viewHolder.title.setText(spaceNote.getTitle());
@@ -83,5 +97,5 @@ public class SpaceAdapter extends ArrayAdapter<SpaceNote> {
         //Modify below to print the time if the modified date is the same as the day the app is being viewed
         viewHolder.modified.setText(spaceNote.getM_date());
         return convertView;
-    }
+    }*/
 }

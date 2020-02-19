@@ -3,6 +3,7 @@ package com.example.savespace;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -10,12 +11,28 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<SpaceNote> spaceNotes;
+    ArrayList<String> food;
     //SpaceAdapter spaceAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        food = new ArrayList<String>();
+        food.add("abx");
+        food.add("gang");
+        food.add("last words");
+        food.add("incels");
+        food.add("ISIS");
+        food.add("Karen");
+        food.add("Terrorists");
+        food.add("mixer");
+        food.add("Objective");
+        food.add("Overdose");
+        food.add("positive");
+        food.add("Trying");
+        food.add("Murder");
 
         //SpaceNote a = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
         /*SpaceNote b = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
@@ -30,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         SpaceNote k = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
         SpaceNote l = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");*/
 
+
+        //spaceNotes = new ArrayList<String>();
         //spaceNotes.add(a);
         /*spaceNotes.add(b);
         spaceNotes.add(c);
@@ -46,6 +65,11 @@ public class MainActivity extends AppCompatActivity {
         //spaceAdapter = new SpaceAdapter(spaceNotes, this, R.layout.note_list);
         //ListView main_list = findViewById(R.id.main_list);
         //main_list.setAdapter(spaceAdapter);
+
+        ListView main_list = findViewById(R.id.main_list);
+        ArrayAdapter<String> foodAdapter = new ArrayAdapter<String>(this, R.layout.activity_main);
+        main_list.setAdapter(foodAdapter);
+
     }
 
     /*

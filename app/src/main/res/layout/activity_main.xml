@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <!--ListView
+    <ListView
         android:id="@+id/main_list"
         android:layout_width="409dp"
         android:layout_height="729dp"
@@ -15,9 +15,9 @@
         tools:layout_editor_absoluteY="1dp" >
 
 
-    </ListView-->
-    <TextView
+    </ListView>
+    <!--TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="hello"/>
+        android:text="hello"/-->
 </LinearLayout>
