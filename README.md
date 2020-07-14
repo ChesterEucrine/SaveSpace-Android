@@ -1,5 +1,4 @@
-<a href="https://circleci.com/gh/ChesterEucrine/SaveSpace-Android"><img src="https://circleci.com/gh/ChesterEucrine/SaveSpace-Android.svg?style=svg" alt='CircleCi status'></a>
-# SaveSpace
+<a href="https://circleci.com/gh/ChesterEucrine/SaveSpace-Android"><img src="https://circleci.com/gh/ChesterEucrine/SaveSpace-Android.svg?style=svg" alt='CircleCi status'></a># SaveSpace
  
 An android app to save and edit notes and reminders
 
