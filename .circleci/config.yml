@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/android:api-25-alpha
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -37,6 +37,12 @@ jobs:
           paths:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
+      - run:
+          name: Agree to sdk licences
+          command: echo y | sdkmanager --licenses
+      - run:
+          name: Update sdk licences
+          command: echo y | sdkmanager --update || exit 0
 
       # run tests!
       - run: gradle test
