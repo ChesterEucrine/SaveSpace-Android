@@ -1,3 +1,4 @@
+[![codecov.io](https://codecov.io/github/ChesterEucrine/SaveSpace-Android/branch/master/graph/badge.svg)](https://codecov.io/github/ChesterEucrine/SaveSpace-Android)
 <a href="https://circleci.com/gh/ChesterEucrine/SaveSpace-Android"><img src="https://circleci.com/gh/ChesterEucrine/SaveSpace-Android.svg?style=svg" alt='CircleCi status'></a>
 SaveSpace
 =========
