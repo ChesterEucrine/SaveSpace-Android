@@ -52,7 +52,7 @@ jobs:
       - run:
           name: Run UnitTests
           command: ./gradlew test
-      - run:
-          name: Coveralls bash 
-          command: curl -s https://codecov.io/bash
+#      - run:
+#          name: Coveralls bash 
+#          command: curl -s https://codecov.io/bash
        
