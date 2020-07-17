@@ -4,41 +4,27 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.example.savespace.R;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
 public class SpaceAdapter extends ArrayAdapter<SpaceNote> {
 
-    private Context mContext;
+    private Context context;
     private ArrayList<SpaceNote> spaceNotes;
 
 
-    public SpaceAdapter (ArrayList<SpaceNote> sN, Context context, int resource) {
-        super(context, resource);
+    public SpaceAdapter (ArrayList<SpaceNote> sN, Context context) {
+        super(context, 0, sN);
         spaceNotes = sN;
-        mContext = context;
+        this.context = context;
     }
 
     public void onClick(View v)
     {
-        Toast.makeText(mContext, "Some item clicked!!!", Toast.LENGTH_SHORT).show();
-    }
-
-    @NonNull
-    @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        return super.getView(position, convertView, parent);
+        Toast.makeText(context, "Some item clicked!!!", Toast.LENGTH_SHORT).show();
     }
 
     /*
@@ -61,12 +47,28 @@ public class SpaceAdapter extends ArrayAdapter<SpaceNote> {
                 Snackbar.make(v, "Modified date "+ spaceNote.getM_date(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
             break;
         }
-    }
+    }*/
 
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        SpaceNote spaceNote = getItem(position);
-        ViewHolder viewHolder;
+        SpaceNote currentItem = spaceNotes.get(position);
+        View listItem = convertView;
+        if (listItem == null)
+        {
+            listItem = LayoutInflater.from(context).inflate(R.layout.note_list, parent, false);
+        }
+
+        TextView title = (TextView) listItem.findViewById(R.id.main_title);
+        title.setText(currentItem.getTitle());
+
+        TextView notes = listItem.findViewById(R.id.main_notes);
+        notes.setText(currentItem.getNotes());
+
+        TextView date = listItem.findViewById(R.id.main_modified);
+        date.setText(currentItem.getM_date());
+
+        return listItem;
+        /*ViewHolder viewHolder;
 
         final View result;
         if (convertView == null)
@@ -85,9 +87,9 @@ public class SpaceAdapter extends ArrayAdapter<SpaceNote> {
         {
             viewHolder = (ViewHolder) convertView.getTag();
             result = convertView;
-        }
+        }*/
 
-        /*Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
+        /*Animation animation = AnimationUtils.loadAnimation(context, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
         result.startAnimation(animation);/
         lastPosition = position;
 
@@ -96,6 +98,6 @@ public class SpaceAdapter extends ArrayAdapter<SpaceNote> {
 
         //Modify below to print the time if the modified date is the same as the day the app is being viewed
         viewHolder.modified.setText(spaceNote.getM_date());
-        return convertView;
-    }*/
+        return convertView;*/
+    }
 }

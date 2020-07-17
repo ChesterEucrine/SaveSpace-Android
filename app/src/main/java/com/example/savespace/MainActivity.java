@@ -34,8 +34,8 @@ public class MainActivity extends AppCompatActivity {
         food.add("Trying");
         food.add("Murder");
 
-        //SpaceNote a = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
-        /*SpaceNote b = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
+        SpaceNote a = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
+        SpaceNote b = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
         SpaceNote c = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
         SpaceNote d = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
         SpaceNote e = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
@@ -45,12 +45,12 @@ public class MainActivity extends AppCompatActivity {
         SpaceNote i = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
         SpaceNote j = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
         SpaceNote k = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
-        SpaceNote l = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");*/
+        SpaceNote l = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
 
 
-        //spaceNotes = new ArrayList<String>();
-        //spaceNotes.add(a);
-        /*spaceNotes.add(b);
+        spaceNotes = new ArrayList<>();
+        spaceNotes.add(a);
+        spaceNotes.add(b);
         spaceNotes.add(c);
         spaceNotes.add(d);
         spaceNotes.add(e);
@@ -60,15 +60,15 @@ public class MainActivity extends AppCompatActivity {
         spaceNotes.add(i);
         spaceNotes.add(j);
         spaceNotes.add(k);
-        spaceNotes.add(l);*/
+        spaceNotes.add(l);
 
         //spaceAdapter = new SpaceAdapter(spaceNotes, this, R.layout.note_list);
         //ListView main_list = findViewById(R.id.main_list);
         //main_list.setAdapter(spaceAdapter);
 
         ListView main_list = findViewById(R.id.main_list);
-        ArrayAdapter<String> foodAdapter = new ArrayAdapter<String>(this, R.layout.activity_main);
-        main_list.setAdapter(foodAdapter);
+        SpaceAdapter spaceAdapter = new SpaceAdapter(spaceNotes, this);
+        main_list.setAdapter(spaceAdapter);
 
     }
 
