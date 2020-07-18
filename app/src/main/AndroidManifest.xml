@@ -10,12 +10,12 @@
         android:supportsRtl="true">
         <activity
             android:name=".Edit_Activity"
-            android:theme="@style/AppTheme">
+            android:theme="@style/Theme.Design.NoActionBar">
         </activity>
 
         <activity
             android:name=".MainActivity"
-            android:theme="@style/NoteTheme">
+            android:theme="@style/Theme.Design.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

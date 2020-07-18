@@ -1,9 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Edit_Activity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/edit_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="60sp"
+        android:background="#ffffdd">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/btn_back"
+                android:onClick="doBack"
+                android:layout_width="wrap_content"
+                android:layout_height="55dp"
+                android:text="back"/>
+
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="wrap_content"
+                android:layout_height="55dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginLeft="294dp"
+                android:layout_marginEnd="13dp"
+                android:onClick="doSave"
+                android:text="Save" />
+        </RelativeLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:background="#ffffdf">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffbc"
+            android:textColor="#000000"
+            android:hint="Title"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+        <EditText
+            android:id="@+id/text_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hellow"
+            android:textSize="20sp"
+            android:background="#ffffdf"
+            android:textColor="#000000"/>
+    </LinearLayout>
+</LinearLayout>
