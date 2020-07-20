@@ -1,41 +1,80 @@
 package com.example.savespace;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import androidx.annotation.Nullable;
+import android.util.Log;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class SpaceDatabaseHelpher extends SQLiteOpenHelper {
+    private static SpaceDatabaseHelpher spaceInstance;
 
-    private String DB_Path;
-    private String DB_Name;
-    private Context DB_Context;
+    // Database Info
+    private static final String DATABASE_NAME = "SPACE_DATABASE";
+    private static final int DATABASE_VERSION = 1;
+
+    // Table Names
+    private static final String TABLE_NOTES = "SAVENOTES";
+
+    // NOTES Table Columns
+    private static final String NOTE_ID = "id";
+    private static final String NOTE_TITLE = "title";
+    private static final String NOTE_INFO = "notes";
+    private static final String NOTE_MODIFIED_DATE = "m_date";
+    private static final String NOTE_MODIFIED_TIME = "m_time";
+
+    // Resources
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final String TAG = "SpaceDatabaseHelper";
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        onCreate(db);
+
+        if (oldVersion != newVersion) {
+            // Simplest implementation is to drop all old tables and recreate them
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTES);
+            onCreate(db);
+        }
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table SaveNotes(id int primary key autoincrement, title text, notes text not null, m_date text, m_time text);");
-        db.execSQL("Insert into SaveNotes(title, notes, m_date, m_time) values('Hello', 'These are the new notes', '2020-02-11', '09:56');");
-        db.execSQL("Insert into SaveNotes(title, notes, m_date, m_time) values('', 'Hello World', '2020-02-11', '09:57');");
+        db.execSQL(
+                "CREATE TABLE " + TABLE_NOTES + "(" +
+                        NOTE_ID + "int PRIMARY KEY AUTOINCREMENT, " +
+                        NOTE_TITLE + "text, " +
+                        NOTE_INFO + "text NOT NULL, " +
+                        NOTE_MODIFIED_DATE + "text NOT NULL, " +
+                        NOTE_MODIFIED_TIME + "text NOT NULL" +
+                ");"
+        );
     }
 
-    public SpaceDatabaseHelpher(Context context, String name) {
-        super(context, name, null, 1);
-        DB_Context = context;
-        DB_Name = name;
+    public static synchronized SpaceDatabaseHelpher getInstance(Context context) {
+        // Use the application context, which will ensure that you
+        // don't accidentally leak an Activity's context.
+        if (spaceInstance == null) {
+            spaceInstance = new SpaceDatabaseHelpher(context.getApplicationContext());
+        }
+        return spaceInstance;
     }
 
+
+    private SpaceDatabaseHelpher(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    /*
+        Hands on Databased functions
+     */
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public String getNow()
     {
         return sdf.format(new java.util.Date());
@@ -108,5 +147,194 @@ public class SpaceDatabaseHelpher extends SQLiteOpenHelper {
     {
         return getWritableDatabase();
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /*
+        Specific functions to modifying the table(s) within the database
+     */
+    public void addNote(SpaceNote spaceNote) {
+        SQLiteDatabase db = getDB();
+
+        db.beginTransaction();
+        try {
+            ContentValues params = new ContentValues();
+            params.put(NOTE_TITLE, spaceNote.getTitle());
+            params.put(NOTE_INFO, spaceNote.getNotes());
+            params.put(NOTE_MODIFIED_DATE, spaceNote.getM_date());
+            params.put(NOTE_MODIFIED_TIME, spaceNote.getM_time());
+
+            db.insertOrThrow(TABLE_NOTES, null, params);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.d(TAG, "Error while trying to add Note to Database");
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    // Method to modify or add a row into the database
+    public void modifyNote(SpaceNote spaceNote) {
+        SQLiteDatabase db = getDB();
+
+        db.beginTransaction();
+        try {
+            ContentValues params = new ContentValues();
+            params.put(NOTE_TITLE, spaceNote.getTitle());
+            params.put(NOTE_INFO, spaceNote.getNotes());
+            params.put(NOTE_MODIFIED_DATE, spaceNote.getM_date());
+            params.put(NOTE_MODIFIED_TIME, spaceNote.getM_time());
+
+            int rows = db.update(
+                    TABLE_NOTES,
+                    params,
+                    NOTE_ID + "=?",
+                    new String[]{Integer.toString(spaceNote.getId())}
+                    );
+
+            if (rows == 1) {
+                String sqlSQ = String.format(
+                        "SELECT %s FROM %s WHERE %s = ?",
+                        NOTE_ID, TABLE_NOTES, NOTE_ID
+                        );
+                Cursor cursor = doQuery(sqlSQ, new String[]{String.valueOf(spaceNote.getId())});
+                try {
+                    if (cursor.moveToFirst()) {
+                        db.setTransactionSuccessful();
+                    }
+                } finally {
+                    if (cursor != null && !cursor.isClosed()) {
+                        cursor.close();
+                    }
+                }
+            } else {
+                db.insertOrThrow(TABLE_NOTES, null, params);
+                db.setTransactionSuccessful();
+            }
+
+            // Another way of updating
+            // but is more redundent since it reinitializes
+            // db
+            /*doUpdate(
+                    "UPDATE " + TABLE_NOTES +
+                            " SET " +
+                            NOTE_TITLE + "=?, " +
+                            NOTE_INFO + "=?, " +
+                            NOTE_MODIFIED_DATE + "=?, " +
+                            NOTE_MODIFIED_TIME + "=?, ",
+                    new String[]{
+                            spaceNote.getTitle(),
+                            spaceNote.getNotes(),
+                            spaceNote.getM_date(),
+                            spaceNote.getM_time()
+                    }
+            );*/
+        } catch (Exception e) {
+            Log.d(TAG, "Error while trying to update user");
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    // Method to Retrieve all Notes
+    // Returns List of SpaceNote
+    public ArrayList<SpaceNote> getAllNotes() {
+        ArrayList<SpaceNote> spaceNotes = new ArrayList<>();
+
+        String NOTE_SELECT_QUERY =
+                String.format("SELECT * FROM %s", TABLE_NOTES);
+
+        Cursor notesCursor = doQuery(NOTE_SELECT_QUERY);
+        try {
+            if (notesCursor.moveToFirst()) {
+                do {
+                    int id = Integer.parseInt(notesCursor.getString(notesCursor.getColumnIndex("id")));
+                    String title = notesCursor.getString(notesCursor.getColumnIndex("title"));
+                    String notes = notesCursor.getString(notesCursor.getColumnIndex("notes"));
+                    String m_date = notesCursor.getString(notesCursor.getColumnIndex("m_dates"));
+                    String m_time = notesCursor.getString(notesCursor.getColumnIndex("m_time"));
+                    SpaceNote temp = new SpaceNote(id, title, notes, m_date, m_time);
+                    spaceNotes.add(temp);
+                } while (notesCursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Error while trying to get notes from Database");
+        } finally {
+            if (notesCursor != null && !notesCursor.isClosed()) {
+                notesCursor.close();
+            }
+        }
+        return spaceNotes;
+    }
+
+    // Method to retrieve one note given it id
+    // return null if no note exists
+    public SpaceNote getNote(int id) {
+        String NOTE_SELECT_QUERY =
+                String.format("SELECT * from %s where %=?", TABLE_NOTES, NOTE_ID);
+        SpaceNote note = null;
+        Cursor notesCursor = doQuery(NOTE_SELECT_QUERY, new String[]{Integer.toString(id)});
+        try {
+            if (notesCursor.moveToFirst()) {
+                String title = notesCursor.getString(notesCursor.getColumnIndex("title"));
+                String notes = notesCursor.getString(notesCursor.getColumnIndex("notes"));
+                String m_date = notesCursor.getString(notesCursor.getColumnIndex("m_dates"));
+                String m_time = notesCursor.getString(notesCursor.getColumnIndex("m_time"));
+                note = new SpaceNote(id, title, notes, m_date, m_time);
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Error while trying to get note with id : "+Integer.toString(id));
+        } finally {
+            if (notesCursor != null && !notesCursor.isClosed()) {
+                notesCursor.close();
+            }
+        }
+        return note;
+    }
+
+    // Method to delete Note
+    public void deleteNote(ArrayList<Integer> noteIds) {
+        ArrayList<Integer> records = new ArrayList<>();
+        SQLiteDatabase db = getDB();
+        db.beginTransaction();
+        try {
+            for (int i = 0; i < noteIds.size(); i++) {
+                records.add(db.delete(TABLE_NOTES, NOTE_ID + "=?", new String[]{Integer.toString(noteIds.get(i))}));
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.d(TAG, "Error while trying to delete "+noteIds.size()+" notes");
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    // Method to delete All Notes
+    public void deleteAllNotes() {
+        SQLiteDatabase db = getDB();
+        db.beginTransaction();
+        try {
+            db.delete(TABLE_NOTES, null, null);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.d(TAG, "Error while trying to delete all Notes");
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    /*
+    NOTES:
+        If we ever would like to add more than one
+        row into the table consider using
+        a compiled SQLiteStatement:
+        https://www.techrepublic.com/blog/software-engineer/turbocharge-your-sqlite-inserts-on-android/
+
+    RESOURCES:
+        https://android-developers.googleblog.com/2009/01/avoiding-memory-leaks.html
+        https://guides.codepath.com/android/local-databases-with-sqliteopenhelper#full-database-handler-source
+
+    FUTURE ALT METHODS:
+        https://www.androiddesignpatterns.com/2012/05/correctly-managing-your-sqlite-database.html
+        https://guides.codepath.com/android/Persisting-Data-to-the-Device#object-relational-mappers
+     */
 }
