@@ -3,6 +3,7 @@ package com.example.savespace;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<SpaceNote> spaceNotes;
+    static public SpaceDatabaseHelpher databaseHelpher;
+    ListView main_list;
     //SpaceAdapter spaceAdapter;
 
     @Override
@@ -21,12 +24,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SpaceNote a = new SpaceNote(0, "Hello World", "Werukamu tsu za warudo!!!", "16-02-2020", "00:00");
-
+        databaseHelpher = SpaceDatabaseHelpher.getInstance(this);
         spaceNotes = new ArrayList<>();
-        spaceNotes.add(a);
+        main_list = findViewById(R.id.main_list);
+    }
 
-        ListView main_list = findViewById(R.id.main_list);
+    public void setUpNotes() {
+        spaceNotes = databaseHelpher.getAllNotes();
         SpaceAdapter spaceAdapter = new SpaceAdapter(spaceNotes, this);
         main_list.setAdapter(spaceAdapter);
 
@@ -34,10 +38,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent edit = new Intent(getApplicationContext(), Edit_Activity.class);
+                edit.putExtra("id", spaceNotes.get(position).getId());
                 startActivity(edit);
             }
         });
-
     }
 
     /*
