@@ -3,11 +3,10 @@ package com.example.savespace;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -15,33 +14,54 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<SpaceNote> spaceNotes;
-    static public SpaceDatabaseHelpher databaseHelpher;
+    static public SpaceDatabaseHelper databaseHelpher;
     ListView main_list;
-    //SpaceAdapter spaceAdapter;
+    SpaceAdapter spaceAdapter;
+    private static final String TAG = "MAIN";
+
+    @Override
+    protected void onResume() {
+        // fetch updated data
+        super.onResume();
+        spaceAdapter.updateList(databaseHelpher.getAllNotes());
+        spaceAdapter.notifyDataSetChanged();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        databaseHelpher = SpaceDatabaseHelpher.getInstance(this);
+        databaseHelpher = SpaceDatabaseHelper.getInstance(this);
         spaceNotes = new ArrayList<>();
         main_list = findViewById(R.id.main_list);
+        setUpNotes();
     }
 
     public void setUpNotes() {
         spaceNotes = databaseHelpher.getAllNotes();
-        SpaceAdapter spaceAdapter = new SpaceAdapter(spaceNotes, this);
+        for (SpaceNote n:spaceNotes) {
+            n.print();
+        }
+        Log.d(TAG, "Length : "+spaceNotes.size());
+        spaceAdapter = new SpaceAdapter(spaceNotes, this);
         main_list.setAdapter(spaceAdapter);
 
         main_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent edit = new Intent(getApplicationContext(), Edit_Activity.class);
-                edit.putExtra("id", spaceNotes.get(position).getId());
+                edit.putExtra("id", Integer.toString(spaceNotes.get(position).getId()));
+                edit.putExtra("action", "1");
                 startActivity(edit);
             }
         });
+    }
+
+    public void doAdd(View v) {
+        Intent edit = new Intent(getApplicationContext(), Edit_Activity.class);
+        edit.putExtra("action", "0");
+        startActivity(edit);
     }
 
     /*

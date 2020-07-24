@@ -11,10 +11,9 @@ import android.util.Log;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
-public class SpaceDatabaseHelpher extends SQLiteOpenHelper {
-    private static SpaceDatabaseHelpher spaceInstance;
+public class SpaceDatabaseHelper extends SQLiteOpenHelper {
+    private static SpaceDatabaseHelper spaceInstance;
 
     // Database Info
     private static final String DATABASE_NAME = "SPACE_DATABASE";
@@ -48,26 +47,26 @@ public class SpaceDatabaseHelpher extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(
                 "CREATE TABLE " + TABLE_NOTES + "(" +
-                        NOTE_ID + "int PRIMARY KEY AUTOINCREMENT, " +
-                        NOTE_TITLE + "text, " +
-                        NOTE_INFO + "text NOT NULL, " +
-                        NOTE_MODIFIED_DATE + "text NOT NULL, " +
-                        NOTE_MODIFIED_TIME + "text NOT NULL" +
+                        NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        NOTE_TITLE + " text, " +
+                        NOTE_INFO + " text NOT NULL, " +
+                        NOTE_MODIFIED_DATE + " text NOT NULL, " +
+                        NOTE_MODIFIED_TIME + " text NOT NULL" +
                 ");"
         );
     }
 
-    public static synchronized SpaceDatabaseHelpher getInstance(Context context) {
+    public static synchronized SpaceDatabaseHelper getInstance(Context context) {
         // Use the application context, which will ensure that you
         // don't accidentally leak an Activity's context.
         if (spaceInstance == null) {
-            spaceInstance = new SpaceDatabaseHelpher(context.getApplicationContext());
+            spaceInstance = new SpaceDatabaseHelper(context.getApplicationContext());
         }
         return spaceInstance;
     }
 
 
-    private SpaceDatabaseHelpher(Context context) {
+    private SpaceDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -220,7 +219,7 @@ public class SpaceDatabaseHelpher extends SQLiteOpenHelper {
                             NOTE_TITLE + "=?, " +
                             NOTE_INFO + "=?, " +
                             NOTE_MODIFIED_DATE + "=?, " +
-                            NOTE_MODIFIED_TIME + "=?, ",
+                            NOTE_MODIFIED_TIME + "=? ",
                     new String[]{
                             spaceNote.getTitle(),
                             spaceNote.getNotes(),
@@ -241,23 +240,30 @@ public class SpaceDatabaseHelpher extends SQLiteOpenHelper {
         ArrayList<SpaceNote> spaceNotes = new ArrayList<>();
 
         String NOTE_SELECT_QUERY =
-                String.format("SELECT * FROM %s", TABLE_NOTES);
+                String.format("SELECT %s, %s, %s, %s, %s FROM %s",
+                        NOTE_ID,
+                        NOTE_TITLE,
+                        NOTE_INFO,
+                        NOTE_MODIFIED_DATE,
+                        NOTE_MODIFIED_TIME,
+                        TABLE_NOTES);
 
         Cursor notesCursor = doQuery(NOTE_SELECT_QUERY);
         try {
             if (notesCursor.moveToFirst()) {
                 do {
-                    int id = Integer.parseInt(notesCursor.getString(notesCursor.getColumnIndex("id")));
-                    String title = notesCursor.getString(notesCursor.getColumnIndex("title"));
-                    String notes = notesCursor.getString(notesCursor.getColumnIndex("notes"));
-                    String m_date = notesCursor.getString(notesCursor.getColumnIndex("m_dates"));
-                    String m_time = notesCursor.getString(notesCursor.getColumnIndex("m_time"));
+                    int id = Integer.parseInt(notesCursor.getString(notesCursor.getColumnIndex(NOTE_ID)));
+                    String title = notesCursor.getString(notesCursor.getColumnIndex(NOTE_TITLE));
+                    String notes = notesCursor.getString(notesCursor.getColumnIndex(NOTE_INFO));
+                    String m_date = notesCursor.getString(notesCursor.getColumnIndex(NOTE_MODIFIED_DATE));
+                    String m_time = notesCursor.getString(notesCursor.getColumnIndex(NOTE_MODIFIED_TIME));
                     SpaceNote temp = new SpaceNote(id, title, notes, m_date, m_time);
                     spaceNotes.add(temp);
                 } while (notesCursor.moveToNext());
             }
         } catch (Exception e) {
             Log.d(TAG, "Error while trying to get notes from Database");
+            e.printStackTrace();
         } finally {
             if (notesCursor != null && !notesCursor.isClosed()) {
                 notesCursor.close();
@@ -270,16 +276,23 @@ public class SpaceDatabaseHelpher extends SQLiteOpenHelper {
     // return null if no note exists
     public SpaceNote getNote(int id) {
         String NOTE_SELECT_QUERY =
-                String.format("SELECT * from %s where %=?", TABLE_NOTES, NOTE_ID);
+                String.format("SELECT  %s, %s, %s, %s from %s where %s=?",
+                        NOTE_TITLE,
+                        NOTE_INFO,
+                        NOTE_MODIFIED_DATE,
+                        NOTE_MODIFIED_TIME,
+                        TABLE_NOTES,
+                        NOTE_ID);
         SpaceNote note = null;
         Cursor notesCursor = doQuery(NOTE_SELECT_QUERY, new String[]{Integer.toString(id)});
         try {
             if (notesCursor.moveToFirst()) {
-                String title = notesCursor.getString(notesCursor.getColumnIndex("title"));
-                String notes = notesCursor.getString(notesCursor.getColumnIndex("notes"));
-                String m_date = notesCursor.getString(notesCursor.getColumnIndex("m_dates"));
-                String m_time = notesCursor.getString(notesCursor.getColumnIndex("m_time"));
+                String title = notesCursor.getString(notesCursor.getColumnIndex(NOTE_TITLE));
+                String notes = notesCursor.getString(notesCursor.getColumnIndex(NOTE_INFO));
+                String m_date = notesCursor.getString(notesCursor.getColumnIndex(NOTE_MODIFIED_DATE));
+                String m_time = notesCursor.getString(notesCursor.getColumnIndex(NOTE_MODIFIED_TIME));
                 note = new SpaceNote(id, title, notes, m_date, m_time);
+                note.print();
             }
         } catch (Exception e) {
             Log.d(TAG, "Error while trying to get note with id : "+Integer.toString(id));

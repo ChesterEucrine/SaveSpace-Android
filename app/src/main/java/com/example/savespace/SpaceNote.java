@@ -1,11 +1,14 @@
 package com.example.savespace;
 
+import android.util.Log;
+
 public class SpaceNote {
     private int id;
     private String title;
     private String notes;
     private String m_date;
     private String m_time;
+    private static final String TAG = "SPACENOTE";
 
     public SpaceNote(int id, String title, String notes, String m_date, String m_time)
     {
@@ -16,10 +19,9 @@ public class SpaceNote {
         this.m_time = m_time;
     }
 
-
-
-
-
+    public void print() {
+        Log.d(TAG, id+" "+title+" "+notes+" "+m_date+" "+m_time);
+    }
 
     public int getId() {
         return id;

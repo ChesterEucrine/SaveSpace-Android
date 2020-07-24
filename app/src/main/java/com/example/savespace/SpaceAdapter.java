@@ -49,6 +49,11 @@ public class SpaceAdapter extends ArrayAdapter<SpaceNote> {
         }
     }*/
 
+    public void updateList(ArrayList<SpaceNote> spaceNotes) {
+        this.spaceNotes.clear();
+        this.spaceNotes.addAll(spaceNotes);
+    }
+
     public View getView(int position, View convertView, ViewGroup parent)
     {
         SpaceNote currentItem = spaceNotes.get(position);
@@ -66,6 +71,9 @@ public class SpaceAdapter extends ArrayAdapter<SpaceNote> {
 
         TextView date = listItem.findViewById(R.id.main_modified);
         date.setText(currentItem.getM_date());
+
+        TextView id = listItem.findViewById(R.id.main_id);
+        id.setText(Integer.toString(currentItem.getId()));
 
         return listItem;
         /*ViewHolder viewHolder;

@@ -18,14 +18,14 @@
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/btn_back"
+                android:id="@+id/edit_btn_back"
                 android:onClick="doBack"
                 android:layout_width="wrap_content"
                 android:layout_height="55dp"
                 android:text="back"/>
 
             <Button
-                android:id="@+id/btn_save"
+                android:id="@+id/edit_btn_save"
                 android:layout_width="wrap_content"
                 android:layout_height="55dp"
                 android:layout_alignParentEnd="true"
@@ -44,6 +44,7 @@
         android:layout_weight="1"
         android:background="#ffffdf">
         <EditText
+            android:id="@+id/edit_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffbc"
@@ -52,7 +53,7 @@
             android:textSize="40sp"
             android:textStyle="bold" />
         <EditText
-            android:id="@+id/text_note"
+            android:id="@+id/edit_note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Hellow"
