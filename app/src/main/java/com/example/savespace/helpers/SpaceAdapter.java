@@ -1,4 +1,4 @@
-package com.example.savespace;
+package com.example.savespace.helpers;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.savespace.R;
+import com.example.savespace.helpers.SpaceNote;
 
 import java.util.ArrayList;
 

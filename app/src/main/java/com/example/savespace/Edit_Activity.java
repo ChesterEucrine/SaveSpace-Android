@@ -9,9 +9,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.savespace.helpers.LoadingDialogue;
+import com.example.savespace.helpers.SpaceDatabaseHelper;
+import com.example.savespace.helpers.SpaceNote;
+
 public class Edit_Activity extends AppCompatActivity {
 
     SpaceDatabaseHelper spaceDatabaseHelper;
+    LoadingDialogue loadingDialogue;
     EditText title;
     EditText note;
     int id;
@@ -32,6 +37,7 @@ public class Edit_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_edit);
 
         spaceDatabaseHelper = SpaceDatabaseHelper.getInstance(this);
+        loadingDialogue = new LoadingDialogue(this);
         Intent parent = getIntent();
         if (parent.hasExtra("action")) {
             action = Integer.parseInt(parent.getStringExtra("action"));
@@ -57,7 +63,17 @@ public class Edit_Activity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        loadingDialogue.startLoadingDialogue();
+    }
+
     public void doBack(View v) {
+        loadingDialogue.startLoadingDialogue();
+    }
+
+    public void doExit(View v) {
+        loadingDialogue.stopLoadingDialogue();
         finish();
     }
 
@@ -78,7 +94,28 @@ public class Edit_Activity extends AppCompatActivity {
             spaceDatabaseHelper.modifyNote(spaceNote);
         }
         Log.i(TAG, "Successfully Saved Note");
-        Toast.makeText(this, "Saved Maybe", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Saved", Toast.LENGTH_LONG).show();
+    }
+
+    public void doSaveAndExit(View v) {
+        // TODO :
+        //      Save note into the Database and update last saved
+        // Retrieve SpaceNote data
+        String s_title = title.getText().toString();
+        String message = note.getText().toString();
+        String date_time = spaceDatabaseHelper.getNow();
+        String [] temp = date_time.split(" ");
+
+        // Save data to database
+        SpaceNote spaceNote = new SpaceNote(id, s_title, message, temp[0], temp[1]);
+        if (action == 0) {
+            spaceDatabaseHelper.addNote(spaceNote);
+        } else {
+            spaceDatabaseHelper.modifyNote(spaceNote);
+        }
+        Log.i(TAG, "Successfully Saved Note");
+        Toast.makeText(this, "Saved", Toast.LENGTH_LONG).show();
+        finish();
     }
 
     public void noteSetUp(int id) {

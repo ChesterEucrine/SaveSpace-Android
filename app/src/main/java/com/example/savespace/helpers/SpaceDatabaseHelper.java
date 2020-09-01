@@ -1,4 +1,4 @@
-package com.example.savespace;
+package com.example.savespace.helpers;
 
 import android.content.ContentValues;
 import android.content.Context;

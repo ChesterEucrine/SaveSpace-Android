@@ -8,6 +8,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.example.savespace.helpers.SpaceAdapter;
+import com.example.savespace.helpers.SpaceDatabaseHelper;
+import com.example.savespace.helpers.SpaceNote;
 
 import java.util.ArrayList;
 
@@ -50,10 +55,19 @@ public class MainActivity extends AppCompatActivity {
         main_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(), "Touched", Toast.LENGTH_LONG).show();
                 Intent edit = new Intent(getApplicationContext(), Edit_Activity.class);
                 edit.putExtra("id", Integer.toString(spaceNotes.get(position).getId()));
                 edit.putExtra("action", "1");
                 startActivity(edit);
+            }
+        });
+
+        main_list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(), "Long Hold", Toast.LENGTH_LONG).show();
+                return false;
             }
         });
     }
@@ -62,6 +76,14 @@ public class MainActivity extends AppCompatActivity {
         Intent edit = new Intent(getApplicationContext(), Edit_Activity.class);
         edit.putExtra("action", "0");
         startActivity(edit);
+    }
+
+    public void doDelete(View v) {
+        /*
+        TODO:   Link to delete function MySQL
+                Create Recycle bin table
+
+         */
     }
 
     /*
