@@ -65,16 +65,42 @@ public class Edit_Activity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        loadingDialogue.startLoadingDialogue();
+        String s_title = title.getText().toString();
+        String message = note.getText().toString();
+        if (!wasEdited(id, s_title, message)) {
+            Toast.makeText(this, "No changes made", Toast.LENGTH_LONG).show();
+            finish();
+        }
+        else
+            loadingDialogue.startLoadingDialogue();
     }
 
     public void doBack(View v) {
-        loadingDialogue.startLoadingDialogue();
+        String s_title = title.getText().toString();
+        String message = note.getText().toString();
+        if (!wasEdited(id, s_title, message)) {
+            Toast.makeText(this, "No changes made", Toast.LENGTH_LONG).show();
+            finish();
+        }
+        else
+            loadingDialogue.startLoadingDialogue();
     }
 
     public void doExit(View v) {
         loadingDialogue.stopLoadingDialogue();
         finish();
+    }
+
+    /*
+        Function to check if an edit was made on the note
+     */
+    public Boolean wasEdited(int id, String title, String message) {
+        SpaceNote currentNote = spaceDatabaseHelper.getNote(id);
+        if (!title.equals(currentNote.getTitle()))
+            return true;
+        if (!message.equals(currentNote.getNotes()))
+            return true;
+        return false;
     }
 
     public void doSave(View v) {
@@ -86,15 +112,21 @@ public class Edit_Activity extends AppCompatActivity {
         String date_time = spaceDatabaseHelper.getNow();
         String [] temp = date_time.split(" ");
 
-        // Save data to database
-        SpaceNote spaceNote = new SpaceNote(id, s_title, message, temp[0], temp[1]);
-        if (action == 0) {
-            spaceDatabaseHelper.addNote(spaceNote);
-        } else {
-            spaceDatabaseHelper.modifyNote(spaceNote);
+        if (!wasEdited(id, s_title, message)) {
+            Toast.makeText(this, "No changes made", Toast.LENGTH_LONG).show();
+            return;
         }
-        Log.i(TAG, "Successfully Saved Note");
-        Toast.makeText(this, "Saved", Toast.LENGTH_LONG).show();
+        else {
+            // Save data to database
+            SpaceNote spaceNote = new SpaceNote(id, s_title, message, temp[0], temp[1]);
+            if (action == 0) {
+                spaceDatabaseHelper.addNote(spaceNote);
+            } else {
+                spaceDatabaseHelper.modifyNote(spaceNote);
+            }
+            Log.i(TAG, "Successfully Saved Note");
+            Toast.makeText(this, "Saved", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void doSaveAndExit(View v) {
