@@ -2,6 +2,7 @@ package com.example.savespace;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<SpaceNote> spaceNotes;
+    Toolbar toolbar;
     static public SpaceDatabaseHelper databaseHelpher;
     ListView main_list;
     SpaceAdapter spaceAdapter;
@@ -40,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        toolbar = findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
 
         databaseHelpher = SpaceDatabaseHelper.getInstance(this);
         spaceNotes = new ArrayList<>();
@@ -116,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
     /*
      * TODO:
-            Review SpaceAdapter and remove the animation part just have a simple adapter
+            Review SpaceAdapter and remove the animation part just have a simple adapter ??
      */
 
     /*

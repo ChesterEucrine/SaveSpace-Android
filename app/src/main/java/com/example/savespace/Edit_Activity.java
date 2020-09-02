@@ -1,22 +1,31 @@
 package com.example.savespace;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.savespace.helpers.LoadingDialogue;
+import com.example.savespace.helpers.AlertDialogue;
 import com.example.savespace.helpers.SpaceDatabaseHelper;
 import com.example.savespace.helpers.SpaceNote;
+
+import java.util.ArrayList;
 
 public class Edit_Activity extends AppCompatActivity {
 
     SpaceDatabaseHelper spaceDatabaseHelper;
-    LoadingDialogue loadingDialogue;
+    Toolbar toolbar;
+    AlertDialogue promptDialogue;
+    AlertDialogue deleteDialogue;
     EditText title;
     EditText note;
     int id;
@@ -36,8 +45,13 @@ public class Edit_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
+        toolbar = findViewById(R.id.edit_toolbar);
+        toolbar.setTitle("Note");
+        setSupportActionBar(toolbar);
+
         spaceDatabaseHelper = SpaceDatabaseHelper.getInstance(this);
-        loadingDialogue = new LoadingDialogue(this);
+        promptDialogue = new AlertDialogue(this, R.layout.prompt_dialog);
+        deleteDialogue = new AlertDialogue(this, R.layout.delete_dialog);
         Intent parent = getIntent();
         if (parent.hasExtra("action")) {
             action = Integer.parseInt(parent.getStringExtra("action"));
@@ -72,7 +86,7 @@ public class Edit_Activity extends AppCompatActivity {
             finish();
         }
         else
-            loadingDialogue.startLoadingDialogue();
+            promptDialogue.startLoadingDialogue();
     }
 
     public void doBack(View v) {
@@ -83,11 +97,11 @@ public class Edit_Activity extends AppCompatActivity {
             finish();
         }
         else
-            loadingDialogue.startLoadingDialogue();
+            promptDialogue.startLoadingDialogue();
     }
 
     public void doExit(View v) {
-        loadingDialogue.stopLoadingDialogue();
+        promptDialogue.stopLoadingDialogue();
         finish();
     }
 
@@ -103,7 +117,19 @@ public class Edit_Activity extends AppCompatActivity {
         return false;
     }
 
-    public void doSave(View v) {
+    public void doDelete(View v) {
+        ArrayList<Integer> noteIds = new ArrayList<>();
+        noteIds.add(id);
+        spaceDatabaseHelper.deleteNote(noteIds);
+        Toast.makeText(this, "Note deleted", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    public void doExitDialogue(View v) {
+        deleteDialogue.stopLoadingDialogue();
+    }
+
+    public void doSave() {
         // TODO :
         //      Save note into the Database and update last saved
         // Retrieve SpaceNote data
@@ -160,8 +186,32 @@ public class Edit_Activity extends AppCompatActivity {
         note.setText(spaceNote.getNotes());
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.edit_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.mm_edit_save:
+                doSave();
+                return true;
+            case R.id.mm_edit_delete:
+                deleteDialogue.startLoadingDialogue();
+                return true;
+            case R.id.mm_edit_lock:
+                Toast.makeText(this, "Yet to implement", Toast.LENGTH_SHORT).show();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     /*
     TODO:
+        Consider a colour scheme
         Link notes to database
         Note Tags:
             - Business
