@@ -67,7 +67,7 @@ public class Edit_Activity extends AppCompatActivity {
         }
         else {
             action = 0;
-            Log.d(TAG, "ID retrieved");
+            Log.d(TAG, "ID not retrieved");
         }
 
         title = findViewById(R.id.edit_title);
@@ -109,6 +109,8 @@ public class Edit_Activity extends AppCompatActivity {
         Function to check if an edit was made on the note
      */
     public Boolean wasEdited(int id, String title, String message) {
+        if (action == 0)
+            return true;
         SpaceNote currentNote = spaceDatabaseHelper.getNote(id);
         if (!title.equals(currentNote.getTitle()))
             return true;
